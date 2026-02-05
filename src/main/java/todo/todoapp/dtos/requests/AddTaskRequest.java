@@ -9,5 +9,6 @@ import lombok.*;
 public class AddTaskRequest {
     private String title;
     private String description;
+    private String userId;
 
 }

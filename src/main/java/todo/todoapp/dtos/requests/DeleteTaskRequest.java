@@ -1,12 +1,12 @@
 package todo.todoapp.dtos.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
+
 public class DeleteTaskRequest {
     private String id;
+    private String userId;
 }

@@ -1,33 +1,40 @@
 package todo.todoapp.Services.implementations;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import todo.todoapp.Services.interfaces.TaskService;
 import todo.todoapp.Services.interfaces.UserService;
+import todo.todoapp.data.models.Task;
 import todo.todoapp.data.models.User;
+import todo.todoapp.data.repositories.TaskRepository;
 import todo.todoapp.data.repositories.UserRepository;
-import todo.todoapp.dtos.requests.LoginRequest;
-import todo.todoapp.dtos.requests.SignUpRequest;
-import todo.todoapp.dtos.responses.LoginResponse;
-import todo.todoapp.dtos.responses.SignUpResponse;
-import todo.todoapp.exceptions.InvalidPasswordException;
+import todo.todoapp.dtos.requests.*;
+import todo.todoapp.dtos.responses.*;
+import todo.todoapp.exceptions.InvalidTaskException;
+import todo.todoapp.exceptions.InvalidUsernameException;
 import todo.todoapp.exceptions.UserDoesNotExistException;
 import todo.todoapp.utils.Mappers;
-import todo.todoapp.utils.PasswordUtil;
 import todo.todoapp.utils.Validators;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final TaskService taskService;
+    @Autowired
+    private  UserRepository userRepository;
+    @Autowired
+    private  TaskService taskService;
 
-    public UserServiceImpl(UserRepository userRepository, TaskService taskService){
-        this.userRepository = userRepository;
-        this.taskService = taskService;
-    }
+    @Autowired
+    private TaskRepository taskRepository;
+
+
 
 
     @Override
     public SignUpResponse signUp(SignUpRequest request) {
+        validateNewUser(request.getUserName());
         User user = Mappers.mapUserSignUpRequest(request);
         userRepository.save(user);
         return Mappers.mapUserSignUpResponse(user);
@@ -44,31 +51,61 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addTask() {
+    public AddTaskResponse addTask(AddTaskRequest request) {
+        User user = findUser(request.getUserId());
+         AddTaskResponse response = taskService.addTask(request);
+        user.addToTask(findTask(response.getId()));
+        userRepository.save(user);
+        return response;
 
     }
 
     @Override
-    public void viewTask() {
+    public ViewTaskResponse viewTask(ViewTaskRequest request) {
+        User user = findUser(request.getUserId());
+        return taskService.viewTask(request);
+    }
+
+    @Override
+    public DeleteResponse deleteTask(DeleteTaskRequest deleteTaskRequest) {
+        User user = findUser(deleteTaskRequest.getUserId());
+        user.removeToTask(findTask(deleteTaskRequest.getId()));
+        userRepository.save(user);
+        return taskService.deleteTask(deleteTaskRequest);
 
     }
 
     @Override
-    public void deleteTask() {
-
+    public UpdateTaskResponse updateTask(UpdateTaskRequest request) {
+        User user = findUser(request.getUserId());
+        UpdateTaskResponse updateTaskResponse = taskService.updateTask(request);
+        Task task = findTask(request.getId());
+        user.removeToTask(task);
+        user.addToTask(task);
+        userRepository.save(user);
+        return updateTaskResponse;
     }
 
     @Override
-    public void viewAllTask() {
-
+    public List<ViewTaskResponse> viewAllTask(ViewTaskRequest request) {
+        User user = findUser(request.getUserId());
+        return Mappers.MapViewAllTask(user);
     }
+
 
     private User findUser(String username){
         return userRepository.findByUsername(username);
     }
+    private Task findTask(String id){
+        return taskRepository.findById(id).orElseThrow(InvalidTaskException::new);
+    }
+
 
     private void validateUserName(String username){
         if(findUser(username) == null) throw new UserDoesNotExistException();
+    }
+    private void validateNewUser(String username){
+        if(findUser(username) != null) throw new InvalidUsernameException();
     }
 
 

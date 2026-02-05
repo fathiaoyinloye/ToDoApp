@@ -61,7 +61,9 @@ class TaskServiceImplTest {
         AddTaskRequest addTask = AddTaskRequest.builder().title("Learn HTML, CSS and JavaScript").description("I want to be able do do...").build();
        AddTaskResponse response = taskService.addTask(addTask);
         assertEquals(1, taskRepository.count());
-        taskService.deleteTask(new DeleteTaskRequest( response.getId()));
+        DeleteTaskRequest deleteTaskRequest =  new DeleteTaskRequest();
+        deleteTaskRequest.setId(response.getId());
+        taskService.deleteTask(deleteTaskRequest);
     }
     @Test
     void testThatTaskAWasAdded_TaskBWasAdded_TaskAWasDeletedById_TaskIsOne(){
@@ -72,7 +74,9 @@ class TaskServiceImplTest {
         AddTaskRequest addTask2 = AddTaskRequest.builder().title("Learn HTML, CSS and JavaScrip").description("I want to be able do do...").build();
         AddTaskResponse response2 = taskService.addTask(addTask);
         assertEquals(2, taskRepository.count());
-        taskService.deleteTask(new DeleteTaskRequest( response2.getId()));
+        DeleteTaskRequest deleteTaskRequest =  new DeleteTaskRequest();
+        deleteTaskRequest.setId(response.getId());
+        taskService.deleteTask(deleteTaskRequest);
         assertEquals(1, taskRepository.count());
 
 
@@ -86,7 +90,9 @@ class TaskServiceImplTest {
         AddTaskRequest addTask2 = AddTaskRequest.builder().title("Learn HTML, CSS and JavaScrip").description("I want to be able do do...").build();
         AddTaskResponse response2 = taskService.addTask(addTask);
         assertEquals(2, taskRepository.count());
-        assertThrows(InvalidTaskException.class, ()-> taskService.deleteTask(new DeleteTaskRequest("890")));
+        DeleteTaskRequest deleteTaskRequest =  new DeleteTaskRequest();
+        deleteTaskRequest.setId("yuijk");
+        assertThrows(InvalidTaskException.class, ()-> taskService.deleteTask(deleteTaskRequest));
         assertEquals(2, taskRepository.count());
 
 

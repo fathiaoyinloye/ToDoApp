@@ -15,5 +15,6 @@ public class AddTaskResponse {
     private String title;
     private Instant dateCreated;
     private String body;
+    private String username;
 
 }

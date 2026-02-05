@@ -8,6 +8,8 @@ import todo.todoapp.dtos.requests.UpdateTaskRequest;
 import todo.todoapp.dtos.responses.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mappers {
     public static void MapAddTaskRequest(AddTaskRequest request, Task task){
@@ -19,7 +21,7 @@ public class Mappers {
      return AddTaskResponse.builder()
             .id(task.getId())
             .title(task.getTittle())
-            .body(task.getTittle())
+            .body(task.getDescription())
             .dateCreated(task.getDateCreated())
             .build();
     }
@@ -64,6 +66,21 @@ public class Mappers {
     }
     public static LoginResponse mapLoginResponse(User user){
         return LoginResponse.builder().name(user.getName()).active(user.isActive()).userName(user.getUsername()).build();
+    }
+
+    public static List<ViewTaskResponse> MapViewAllTask(User user){
+        List<ViewTaskResponse> viewTaskResponses = new ArrayList<>();
+        for(int index = 0; index < user.getTasks().size(); index++){
+            ViewTaskResponse viewTaskResponse = ViewTaskResponse.builder()
+                    .title(user.getTasks().get(index).getTittle())
+                    .description(user.getTasks().get(index).getDescription())
+                    .id(user.getTasks().get(index).getId())
+                    .dateCreated(user.getTasks().get(index).getDateCreated()).build();
+            viewTaskResponses.add(viewTaskResponse);
+        }
+
+        return viewTaskResponses;
+
     }
 
 }

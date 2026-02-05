@@ -14,7 +14,7 @@ import todo.todoapp.utils.PasswordUtil;
 @Builder
 @AllArgsConstructor
 public class SignUpRequest {
-    @NotNull(message = "Username must be filled")
+    @NotNull(message = "Name must be filled")
     @NotBlank(message = "Name must not be left blank")
     private String name;
 
@@ -30,7 +30,4 @@ public class SignUpRequest {
     @Size(min = 5, message = "Password must be at least five characters")
     private String password;
 
-    public void setPassword(String password){
-        this.password = PasswordUtil.hashPassword(password);
-    }
 }

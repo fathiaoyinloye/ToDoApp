@@ -9,4 +9,5 @@ import lombok.Setter;
 @Builder
 public class ViewTaskRequest {
     private String id;
+    private String userId;
 }
