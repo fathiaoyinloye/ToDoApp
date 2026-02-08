@@ -9,6 +9,6 @@ import lombok.Setter;
 @Builder
 public class LoginResponse {
     private String name;
-    private String userName;
+    private String username;
     private boolean active;
 }

@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import todo.todoapp.utils.PasswordUtil;
 
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class SignUpRequest {
     @NotNull(message = "Username must be filled")
     @NotBlank(message = "Username must not be left blank")
     @Size(min = 5, message = "UserName must be at least five characters")
-    private String userName;
+    private String username;
 
 
     @NotNull(message = "Password must be filled")

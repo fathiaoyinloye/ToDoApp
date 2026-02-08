@@ -16,7 +16,6 @@ import todo.todoapp.exceptions.UserDoesNotExistException;
 import todo.todoapp.utils.Mappers;
 import todo.todoapp.utils.Validators;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SignUpResponse signUp(SignUpRequest request) {
-        validateNewUser(request.getUserName());
+        validateNewUser(request.getUsername());
         User user = Mappers.mapUserSignUpRequest(request);
         userRepository.save(user);
         return Mappers.mapUserSignUpResponse(user);
@@ -53,8 +52,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public AddTaskResponse addTask(AddTaskRequest request) {
         User user = findUser(request.getUserId());
-         AddTaskResponse response = taskService.addTask(request);
-        user.addToTask(findTask(response.getId()));
+        if(user == null) throw new UserDoesNotExistException();
+        AddTaskResponse response = taskService.addTask(request);
+         user.addToTask(findTask(response.getId()));
         userRepository.save(user);
         return response;
 
@@ -63,12 +63,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ViewTaskResponse viewTask(ViewTaskRequest request) {
         User user = findUser(request.getUserId());
+        if(user == null) throw new UserDoesNotExistException();
         return taskService.viewTask(request);
     }
 
     @Override
     public DeleteResponse deleteTask(DeleteTaskRequest deleteTaskRequest) {
         User user = findUser(deleteTaskRequest.getUserId());
+        if(user == null) throw new UserDoesNotExistException();
         user.removeToTask(findTask(deleteTaskRequest.getId()));
         userRepository.save(user);
         return taskService.deleteTask(deleteTaskRequest);

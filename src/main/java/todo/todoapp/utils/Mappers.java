@@ -53,7 +53,7 @@ public class Mappers {
     public static User mapUserSignUpRequest(SignUpRequest request){
         User user = new User();
         user.setName(request.getName());
-        user.setUsername(request.getUserName());
+        user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
         user.setActive(true);
 
@@ -62,10 +62,10 @@ public class Mappers {
 
     public static SignUpResponse mapUserSignUpResponse(User user){
         return SignUpResponse.builder().name(user.getName()).active(user.isActive())
-                .userName(user.getUsername()).build();
+                .username(user.getUsername()).build();
     }
     public static LoginResponse mapLoginResponse(User user){
-        return LoginResponse.builder().name(user.getName()).active(user.isActive()).userName(user.getUsername()).build();
+        return LoginResponse.builder().name(user.getName()).active(user.isActive()).username(user.getUsername()).build();
     }
 
     public static List<ViewTaskResponse> MapViewAllTask(User user){
